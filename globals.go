@@ -14,7 +14,7 @@ const (
 	gravity           = 0.5
 	jumpRecovery      = 40
 	wileECoyoteFrames = 16
-	editMode          = true
+	editMode          = false
 
 	screenWidth  = 1024
 	screenHeight = 512
