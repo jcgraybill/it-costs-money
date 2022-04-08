@@ -28,7 +28,6 @@ func init() {
 	tiles = append(tiles, loadSpriteSheet("assets/4-objects-country.png")...)
 
 	level.coinDecay = 120
-	level.startingYPosition = screenHeight - frameHeight*2
 	go loadLevel(false)
 
 	actors = loadActors("levels/level_0_actors.csv", false)

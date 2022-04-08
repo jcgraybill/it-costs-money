@@ -14,7 +14,7 @@ const (
 	gravity           = 0.5
 	jumpRecovery      = 40
 	wileECoyoteFrames = 16
-	enableLevelReload = true
+	editMode          = true
 
 	screenWidth  = 1024
 	screenHeight = 512
@@ -56,7 +56,6 @@ type Coin struct {
 type Level struct {
 	bgImage1, bgImage2, bgImage3, levelImage, levelBackgroundImage, levelForegroundImage *ebiten.Image
 	coinDecay                                                                            int
-	startingYPosition                                                                    int
 }
 
 type Player struct {
