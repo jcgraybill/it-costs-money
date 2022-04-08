@@ -11,6 +11,7 @@ func (g *Game) Update() error {
 
 	player.slides = &player.idleFrames
 
+	//TODO if player is mid-jump, will get stuck hovering in the air
 	if player.x > level.levelImage.Bounds().Dx()-screenWidth/2+frameWidth/2-1 {
 		message = fmt.Sprintf("Congratulations! You collected %d coins.\nPlease place them in the dumpster.", player.coins)
 		return nil
