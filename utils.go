@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"image"
+	"image/color"
 	_ "image/png"
 	"os"
 	"strconv"
@@ -46,7 +47,8 @@ func generateLevelImage(path string, xSize, ySize int, live bool) *ebiten.Image 
 	}
 
 	levelWidth += 1
-	//OpenGL limitation
+	// This is a hardware limitation, will vary machine by machine.
+	// FIXME slice levels into smaller images so the level can be arbitrarily long
 	if levelWidth *= xSize; levelWidth > 16320 {
 		levelWidth = 16320
 	}
@@ -82,14 +84,15 @@ func loadSpriteSheet(path string) []*ebiten.Image {
 	numberofSprites += spriteSheet.Bounds().Dx() / frameWidth * spriteSheet.Bounds().Dy() / frameHeight
 	sprites := make([]*ebiten.Image, numberofSprites+2)
 	i := 1
-
+	sprites[0] = ebiten.NewImage(frameWidth, frameHeight)
+	sprites[0].Fill(color.Black)
 	for y := 0; y < spriteSheet.Bounds().Dy()/frameHeight; y++ {
 		for x := 0; x < spriteSheet.Bounds().Dx()/frameWidth; x++ {
 			sprites[i] = spriteSheet.SubImage(image.Rect(x*frameWidth, y*frameHeight, x*frameWidth+frameWidth, y*frameHeight+frameHeight)).(*ebiten.Image)
 			i++
 		}
 	}
-
+	sprites[i] = sprites[0]
 	return sprites
 }
 
@@ -121,7 +124,7 @@ func loadActors(path string, live bool) []*Actor {
 	if err == nil {
 		for row, line := range strings.Split(string(data), "\n") {
 			for col, cell := range strings.Split(line, ",") {
-				if cell != "0" {
+				if cell != "0" && cell != "" {
 					actors = append(actors, &Actor{x: col * frameWidth, y: row * frameHeight, exists: true, kind: cell})
 				}
 			}

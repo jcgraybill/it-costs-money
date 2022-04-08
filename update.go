@@ -53,10 +53,12 @@ func (g *Game) Update() error {
 		player.wileECoytoe = wileECoyoteFrames
 		if ebiten.IsKeyPressed(ebiten.KeySpace) || ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
 			if player.timeSinceLastJump+jumpRecovery < g.count {
-				player.yVelocity = -jumpHeight
-				player.y += int(player.yVelocity)
-				player.timeSinceLastJump = g.count
-				player.wileECoytoe = 0
+				if _, _, _, a := level.levelImage.At(player.x-frameWidth/2, player.y-jumpHeight).RGBA(); a == 0 {
+					player.yVelocity = -jumpHeight
+					player.y += int(player.yVelocity)
+					player.timeSinceLastJump = g.count
+					player.wileECoytoe = 0
+				}
 			}
 		}
 	} else {
@@ -67,6 +69,11 @@ func (g *Game) Update() error {
 		} else {
 			player.wileECoytoe -= 1
 		}
+	}
+
+	touchingTop := false
+	if _, _, _, a := level.levelImage.At(player.x-frameWidth/2, player.y-frameHeight).RGBA(); a > 0 {
+		touchingTop = true
 	}
 
 	// Running
@@ -87,6 +94,12 @@ func (g *Game) Update() error {
 	}
 
 	// Correct if overlapping with terrain
+
+	if touchingTop && !touchingGround {
+		player.y += 1
+		player.yVelocity = 0
+	}
+
 	if _, _, _, a := level.levelImage.At(player.x-frameWidth/2, player.y+frameHeight-1).RGBA(); a != 0 {
 		for a != 0 {
 			player.y -= 1
@@ -104,7 +117,7 @@ func (g *Game) Update() error {
 
 	// Pick up coins
 	for _, actor := range actors {
-		if actor.exists && actor.x+frameWidth/2 > player.x-frameWidth && actor.x+frameWidth/2 < player.x && actor.y+frameHeight/2 > player.y && actor.y+frameHeight/2 < player.y+frameHeight {
+		if actor.exists && actor.kind == "c" && actor.x+frameWidth/2 > player.x-frameWidth && actor.x+frameWidth/2 < player.x && actor.y+frameHeight/2 > player.y && actor.y+frameHeight/2 < player.y+frameHeight {
 			actor.exists = false
 			player.coins++
 			coin.audioPlayers[g.count%5].Rewind()
@@ -113,9 +126,20 @@ func (g *Game) Update() error {
 	}
 
 	// Fall in holes
-	if player.y > screenHeight*3 {
-		player.x = screenWidth/2 + frameWidth/2
-		player.y = screenHeight - groundHeight - frameHeight
+	if player.y > screenHeight*4 {
+		spawnX, spawnY := 0, 0
+		for _, actor := range actors {
+			if actor.kind == "s" {
+				if actor.x > spawnX && actor.x < player.x {
+					spawnX = actor.x + frameWidth
+					spawnY = actor.y
+				}
+
+			}
+		}
+		player.x = spawnX
+		player.y = spawnY
+		player.yVelocity = 0
 	}
 
 	// Live reload of level, to support level editing

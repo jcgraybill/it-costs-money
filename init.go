@@ -11,28 +11,41 @@ import (
 )
 
 func loadLevel(live bool) {
-	level.coinDecay = 240
+	level.bgImage1 = loadImage("assets/Background_Layer_1.png")
+	level.bgImage2 = loadImage("assets/Background_Layer_2.png")
+	level.bgImage3 = loadImage("assets/Background_Layer_3.png")
 	level.levelImage = generateLevelImage("levels/level_0_main.csv", frameWidth, frameHeight, live)
 	level.levelBackgroundImage = generateLevelImage("levels/level_0_background.csv", frameWidth, frameHeight, live)
 	level.levelForegroundImage = generateLevelImage("levels/level_0_foreground.csv", frameWidth, frameHeight, live)
-	level.levelJunkImage = generateLevelImage("levels/level_0_junk.csv", frameWidth/2, frameHeight/2, live)
 }
 
 func init() {
 	frameBuffer = ebiten.NewImage(screenWidth, screenHeight)
-	level.bgImage1 = loadImage("assets/Background_Layer_1.png")
-	level.bgImage2 = loadImage("assets/Background_Layer_2.png")
-	level.bgImage3 = loadImage("assets/Background_Layer_3.png")
 
-	tiles = loadSpriteSheet("assets/tileset.png")
-	tiles = append(tiles, loadSpriteSheet("assets/tileset2.png")...)
-	tiles = append(tiles, loadSpriteSheet("assets/objects.png")...)
-	tiles = append(tiles, loadSpriteSheet("assets/objects2.png")...)
+	tiles = loadSpriteSheet("assets/1-tiles-city.png")
+	tiles = append(tiles, loadSpriteSheet("assets/2-tiles-country.png")...)
+	tiles = append(tiles, loadSpriteSheet("assets/3-objects-city.png")...)
+	tiles = append(tiles, loadSpriteSheet("assets/4-objects-country.png")...)
 
+	level.coinDecay = 120
+	level.startingYPosition = screenHeight - frameHeight*2
 	go loadLevel(false)
 
-	player.x = screenWidth/2 + frameWidth/2
-	player.y = screenHeight - groundHeight - frameHeight
+	actors = loadActors("levels/level_0_actors.csv", false)
+
+	player.x, player.y = 0, 0
+	for _, actor := range actors {
+		if actor.kind == "s" {
+			if player.x == 0 {
+				player.x = actor.x + frameWidth
+				player.y = actor.y
+			} else if player.x > actor.x {
+				player.x = actor.x + frameWidth
+				player.y = actor.y
+			}
+		}
+	}
+
 	player.yVelocity = 0
 	player.timeSinceLastJump = -jumpRecovery
 	player.facingLeft = false
@@ -67,5 +80,4 @@ func init() {
 
 	}
 
-	actors = loadActors("levels/level_0_actors.csv", false)
 }

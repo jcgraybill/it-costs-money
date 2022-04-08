@@ -20,7 +20,6 @@ const (
 	screenHeight = 512
 	frameWidth   = 64
 	frameHeight  = 64
-	groundHeight = 32
 
 	sampleRate = 48000
 )
@@ -55,8 +54,9 @@ type Coin struct {
 }
 
 type Level struct {
-	bgImage1, bgImage2, bgImage3, levelImage, levelBackgroundImage, levelForegroundImage, levelJunkImage *ebiten.Image
-	coinDecay                                                                                            int
+	bgImage1, bgImage2, bgImage3, levelImage, levelBackgroundImage, levelForegroundImage *ebiten.Image
+	coinDecay                                                                            int
+	startingYPosition                                                                    int
 }
 
 type Player struct {

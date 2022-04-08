@@ -31,17 +31,19 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	for _, actor := range actors {
 		if actor.exists {
-			if actor.x > viewPortOffset || actor.x < viewPortOffset+screenWidth/2-frameWidth {
-				coinOp := &ebiten.DrawImageOptions{}
-				coinOp.GeoM.Translate(-float64(viewPortOffset-actor.x), float64(actor.y))
-				frameBuffer.DrawImage(coin.slides[(g.count/coin.animationSpeed)%coin.numSlides], coinOp)
+			if actor.kind == "c" {
+				if actor.x > viewPortOffset || actor.x < viewPortOffset+screenWidth/2-frameWidth {
+					coinOp := &ebiten.DrawImageOptions{}
+					coinOp.GeoM.Translate(-float64(viewPortOffset-actor.x), float64(actor.y))
+					frameBuffer.DrawImage(coin.slides[(g.count/coin.animationSpeed)%coin.numSlides], coinOp)
+				}
 			}
+
 		}
 	}
 
 	frameBuffer.DrawImage((*player.slides)[i], runnerOP)
 	frameBuffer.DrawImage(level.levelForegroundImage.SubImage(levelViewFinder).(*ebiten.Image), nil)
-	frameBuffer.DrawImage(level.levelJunkImage.SubImage(levelViewFinder).(*ebiten.Image), nil)
 	ebitenutil.DebugPrint(frameBuffer, message)
 	screen.DrawImage(frameBuffer, nil)
 }
