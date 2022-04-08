@@ -68,20 +68,3 @@ type Player struct {
 	idleFrames, runFrames, fallFrames []*ebiten.Image
 	coins                             int
 }
-
-func start(g *Game) *Game {
-	g.count = 0
-	return g
-}
-
-func main() {
-	ebiten.SetWindowSize(screenWidth, screenHeight)
-	ebiten.SetWindowTitle("it costs money to be alive")
-	if err := ebiten.RunGame(start(&Game{})); err != nil {
-		panic(err)
-	}
-}
-
-func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
-	return screenWidth, screenHeight
-}

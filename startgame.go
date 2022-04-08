@@ -10,15 +10,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/audio/wav"
 )
 
-func loadLevel(live bool) {
-	level.bgImage1 = loadImage("assets/Background_Layer_1.png")
-	level.bgImage2 = loadImage("assets/Background_Layer_2.png")
-	level.bgImage3 = loadImage("assets/Background_Layer_3.png")
-	level.levelImage = generateLevelImage("levels/level_0_main.csv", frameWidth, frameHeight, live)
-	level.levelBackgroundImage = generateLevelImage("levels/level_0_background.csv", frameWidth, frameHeight, live)
-	level.levelForegroundImage = generateLevelImage("levels/level_0_foreground.csv", frameWidth, frameHeight, live)
-}
-
 func init() {
 	frameBuffer = ebiten.NewImage(screenWidth, screenHeight)
 
@@ -31,19 +22,7 @@ func init() {
 	go loadLevel(false)
 
 	actors = loadActors("levels/level_0_actors.csv", false)
-
-	player.x, player.y = 0, 0
-	for _, actor := range actors {
-		if actor.kind == "s" {
-			if player.x == 0 {
-				player.x = actor.x + frameWidth
-				player.y = actor.y
-			} else if player.x > actor.x {
-				player.x = actor.x + frameWidth
-				player.y = actor.y
-			}
-		}
-	}
+	goToStartPosition()
 
 	player.yVelocity = 0
 	player.timeSinceLastJump = -jumpRecovery
@@ -79,4 +58,21 @@ func init() {
 
 	}
 
+}
+
+func main() {
+	ebiten.SetWindowSize(screenWidth, screenHeight)
+	ebiten.SetWindowTitle("it costs money to be alive")
+	if err := ebiten.RunGame(start(&Game{})); err != nil {
+		panic(err)
+	}
+}
+
+func start(g *Game) *Game {
+	g.count = 0
+	return g
+}
+
+func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
+	return screenWidth, screenHeight
 }

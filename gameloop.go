@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 func (g *Game) Update() error {
@@ -146,33 +145,7 @@ func (g *Game) Update() error {
 	message = fmt.Sprintf("Gather coins and bring them to the green chest.\nIt costs money to be alive!\nYour coins: %d", player.coins)
 
 	if editMode {
-		// Live reload of level
-		if inpututil.IsKeyJustPressed(ebiten.KeyR) {
-			go loadLevel(true)
-			actors = loadActors("levels/level_0_actors.csv", true)
-		}
-		// skip ahead to next spawn point
-		if inpututil.IsKeyJustPressed(ebiten.KeyS) {
-			spawnX, spawnY := level.levelImage.Bounds().Dx(), 0
-			foundSpawn := false
-			for _, actor := range actors {
-				if actor.kind == "s" {
-					if actor.x > player.x && actor.x < spawnX {
-						spawnX = actor.x + frameWidth
-						spawnY = actor.y
-						foundSpawn = true
-					}
-
-				}
-			}
-			if foundSpawn {
-				player.x = spawnX
-				player.y = spawnY
-				player.yVelocity = 0
-			}
-		}
-
-		message = message + fmt.Sprintf("\nEDIT MODE: (r)eload (s)pawn\ntps %d fps %d", int(ebiten.CurrentTPS()), int(ebiten.CurrentFPS()))
+		levelEditor()
 	}
 
 	return nil

@@ -12,6 +12,21 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+func goToStartPosition() {
+	player.x, player.y = 0, 0
+	for _, actor := range actors {
+		if actor.kind == "s" {
+			if player.x == 0 {
+				player.x = actor.x + frameWidth
+				player.y = actor.y
+			} else if player.x > actor.x {
+				player.x = actor.x + frameWidth
+				player.y = actor.y
+			}
+		}
+	}
+}
+
 func generateLevelImage(path string, xSize, ySize int, live bool) *ebiten.Image {
 	levelData := make([][]int, screenHeight/ySize)
 	levelWidth := 0
