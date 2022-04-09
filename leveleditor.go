@@ -1,3 +1,6 @@
+//go:build !deploy
+// +build !deploy
+
 package main
 
 import (
@@ -35,7 +38,12 @@ func levelEditor() {
 			goToStartPosition()
 		}
 	}
+	xCellRune := ' '
+	if xCell := (player.x-frameWidth/2)/(frameWidth*26) + 64; xCell > 64 {
+		xCellRune = rune(xCell)
+	}
+	pos := fmt.Sprintf("%c%c:%d", xCellRune, rune(((player.x-frameWidth/2)/frameWidth)%26+65), player.y/frameWidth+1)
 
-	message = message + fmt.Sprintf("\nEDIT MODE: (r)eload (s)pawn\ntps %d fps %d", int(ebiten.CurrentTPS()), int(ebiten.CurrentFPS()))
+	message = message + fmt.Sprintf("\n[%s](r)eload (s)pawn\ntps %d fps %d", pos, int(ebiten.CurrentTPS()), int(ebiten.CurrentFPS()))
 
 }

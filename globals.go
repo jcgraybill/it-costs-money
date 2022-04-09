@@ -14,12 +14,10 @@ const (
 	gravity           = 0.5
 	jumpRecovery      = 40
 	wileECoyoteFrames = 16
-	editMode          = false
-
-	screenWidth  = 1024
-	screenHeight = 512
-	frameWidth   = 64
-	frameHeight  = 64
+	screenWidth       = 1024
+	screenHeight      = 512
+	frameWidth        = 64
+	frameHeight       = 64
 
 	sampleRate = 48000
 )

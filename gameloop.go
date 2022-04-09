@@ -145,9 +145,7 @@ func (g *Game) Update() error {
 
 	message = fmt.Sprintf("Gather coins and bring them to the green chest.\nIt costs money to be alive!\nYour coins: %d", player.coins)
 
-	if editMode {
-		levelEditor()
-	}
+	levelEditor()
 
 	return nil
 }
