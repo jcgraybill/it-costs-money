@@ -15,7 +15,7 @@ import (
 
 type Level struct {
 	BgImage1, BgImage2, BgImage3, LevelImage, LevelBackgroundImage, LevelForegroundImage *ebiten.Image
-	CoinDecay, CoinHolePenalty, MoveSpeed, JumpHeight                                    int
+	CoinDecay, CoinHolePenalty, MoveSpeed, JumpHeight, LevelNumber                       int
 	Gravity                                                                              float64
 	Coin                                                                                 coin.Coin
 	Spawns                                                                               []*spawn.Spawn
@@ -23,6 +23,7 @@ type Level struct {
 
 func New(levelNumber int, tiles []*ebiten.Image, audioContext *audio.Context) Level {
 	var l Level
+	l.LevelNumber = levelNumber
 	l.CoinDecay = 90
 	l.CoinHolePenalty = 5
 	l.MoveSpeed = 4
@@ -31,9 +32,9 @@ func New(levelNumber int, tiles []*ebiten.Image, audioContext *audio.Context) Le
 	l.BgImage1 = sys.LoadImage("assets/Background_Layer_1.png")
 	l.BgImage2 = sys.LoadImage("assets/Background_Layer_2.png")
 	l.BgImage3 = sys.LoadImage("assets/Background_Layer_3.png")
-	l.LevelImage = generateLevelImage(fmt.Sprintf("leveldata/level_%d_main.csv", levelNumber), tiles)
-	l.LevelBackgroundImage = generateLevelImage(fmt.Sprintf("leveldata/level_%d_background.csv", levelNumber), tiles)
-	l.LevelForegroundImage = generateLevelImage(fmt.Sprintf("leveldata/level_%d_foreground.csv", levelNumber), tiles)
+	l.LevelImage = generateLevelImage(fmt.Sprintf("leveldata/level_%d_main.csv", l.LevelNumber), tiles)
+	l.LevelBackgroundImage = generateLevelImage(fmt.Sprintf("leveldata/level_%d_background.csv", l.LevelNumber), tiles)
+	l.LevelForegroundImage = generateLevelImage(fmt.Sprintf("leveldata/level_%d_foreground.csv", l.LevelNumber), tiles)
 	l.Coin = coin.New(audioContext)
 	l.Coin.Coins, l.Spawns = loadActors(fmt.Sprintf("leveldata/level_%d_actors.csv", levelNumber))
 	return l
