@@ -1,10 +1,10 @@
 //go:build !deploy
 // +build !deploy
 
-package util
+package sys
 
 import "os"
 
 func GameData(path string) ([]byte, error) {
-	return os.ReadFile(path)
+	return os.ReadFile("sys/" + path)
 }

@@ -1,4 +1,6 @@
 // TODO coin should be contained within level, since it's an actor
+// Put coins and spawns in separate slices in "level", so you can scan through them without
+// checking "kind"
 
 package coin
 
@@ -9,7 +11,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/audio/wav"
-	"github.com/jcgraybill/it-costs-money/util"
+	"github.com/jcgraybill/it-costs-money/sys"
 )
 
 type Coin struct {
@@ -23,7 +25,7 @@ type Coin struct {
 
 func New() Coin {
 	var c Coin
-	coinSprites := util.LoadSpriteSheet("assets/coin.png")
+	coinSprites := sys.LoadSpriteSheet("assets/coin.png")
 	c.Slides = coinSprites[1:7]
 	c.NumSlides = 6
 	c.AnimationSpeed = 10
@@ -31,7 +33,7 @@ func New() Coin {
 	c.audioContext = audio.NewContext(c.sampleRate)
 
 	for i := 0; i < 5; i++ {
-		audioBytes, err := util.GameData(fmt.Sprintf("assets/Coins_Grab_0%d.wav", i))
+		audioBytes, err := sys.GameData(fmt.Sprintf("assets/Coins_Grab_0%d.wav", i))
 		if err != nil {
 			panic(err)
 		}

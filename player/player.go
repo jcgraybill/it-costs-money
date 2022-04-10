@@ -4,7 +4,7 @@ import (
 	_ "image/png"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/jcgraybill/it-costs-money/util"
+	"github.com/jcgraybill/it-costs-money/sys"
 )
 
 const (
@@ -35,7 +35,7 @@ func New() Player {
 	p.FacingLeft = false
 	p.WileECoyote = wileECoyoteFrames
 
-	runner := util.LoadSpriteSheet("assets/runner.png")
+	runner := sys.LoadSpriteSheet("assets/runner.png")
 	p.IdleFrames = runner[1:6]
 	p.RunFrames = runner[9:17]
 	p.FallFrames = runner[17:21]

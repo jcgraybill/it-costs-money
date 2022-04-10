@@ -7,11 +7,8 @@ import (
 	"github.com/jcgraybill/it-costs-money/coin"
 	"github.com/jcgraybill/it-costs-money/level"
 	"github.com/jcgraybill/it-costs-money/player"
-	"github.com/jcgraybill/it-costs-money/util"
+	"github.com/jcgraybill/it-costs-money/sys"
 )
-
-var frameBuffer *ebiten.Image
-var message string
 
 type Game struct {
 	count  int
@@ -21,18 +18,21 @@ type Game struct {
 	coin   coin.Coin
 }
 
+var frameBuffer *ebiten.Image
+var message string
+
 func main() {
-	frameBuffer = ebiten.NewImage(util.ScreenWidth, util.ScreenHeight)
-	ebiten.SetWindowSize(util.ScreenWidth, util.ScreenHeight)
+	frameBuffer = ebiten.NewImage(sys.ScreenWidth, sys.ScreenHeight)
+	ebiten.SetWindowSize(sys.ScreenWidth, sys.ScreenHeight)
 	ebiten.SetWindowTitle("it costs money to be alive")
 
 	var g Game
 	g.count = 0
-	g.tiles = util.LoadSpriteSheet("assets/1-tiles-city.png")
-	g.tiles = append(g.tiles, util.LoadSpriteSheet("assets/2-tiles-country.png")...)
-	g.tiles = append(g.tiles, util.LoadSpriteSheet("assets/3-objects-city.png")...)
-	g.tiles = append(g.tiles, util.LoadSpriteSheet("assets/4-objects-country.png")...)
-	g.level = level.New(0, g.tiles)
+	g.tiles = sys.LoadSpriteSheet("assets/1-tiles-city.png")
+	g.tiles = append(g.tiles, sys.LoadSpriteSheet("assets/2-tiles-country.png")...)
+	g.tiles = append(g.tiles, sys.LoadSpriteSheet("assets/3-objects-city.png")...)
+	g.tiles = append(g.tiles, sys.LoadSpriteSheet("assets/4-objects-country.png")...)
+	g.level = level.New(1, g.tiles)
 	g.player = player.New()
 	g.player.X, g.player.Y = g.level.StartPosition()
 	g.coin = coin.New()
@@ -43,5 +43,5 @@ func main() {
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
-	return util.ScreenWidth, util.ScreenHeight
+	return sys.ScreenWidth, sys.ScreenHeight
 }

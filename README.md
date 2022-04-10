@@ -11,5 +11,5 @@ Built in [golang](https://go.dev/) using the [ebiten](https://ebiten.org/) 2D ga
 ```
 git clone git@github.com:jcgraybill/it-costs-money.git
 go mod tidy
-go build
+go build -tags "ebitensinglethread deploy"
 ```

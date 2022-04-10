@@ -1,4 +1,4 @@
-package util
+package sys
 
 const (
 	ScreenWidth  = 1024
