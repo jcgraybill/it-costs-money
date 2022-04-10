@@ -8,42 +8,43 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/jcgraybill/it-costs-money/level"
+	"github.com/jcgraybill/it-costs-money/util"
 )
 
-func levelEditor() {
+func levelEditor(g *Game) string {
 	// Live reload of level
 	if inpututil.IsKeyJustPressed(ebiten.KeyR) {
-		go loadLevel(true)
-		actors = loadActors("levels/level_0_actors.csv", true)
+		g.level = level.New(0, g.tiles)
 	}
 	// skip ahead to next spawn point
 	if inpututil.IsKeyJustPressed(ebiten.KeyS) {
-		spawnX, spawnY := level.levelImage.Bounds().Dx(), 0
+		spawnX, spawnY := g.level.LevelImage.Bounds().Dx(), 0
 		foundSpawn := false
-		for _, actor := range actors {
-			if actor.kind == "s" {
-				if actor.x > player.x && actor.x < spawnX {
-					spawnX = actor.x + frameWidth
-					spawnY = actor.y
+		for _, actor := range g.level.Actors {
+			if actor.Kind == "s" {
+				if actor.X > g.player.X && actor.X < spawnX {
+					spawnX = actor.X + util.FrameWidth
+					spawnY = actor.Y
 					foundSpawn = true
 				}
 
 			}
 		}
 		if foundSpawn {
-			player.x = spawnX
-			player.y = spawnY
-			player.yVelocity = 0
+			g.player.X = spawnX
+			g.player.Y = spawnY
+			g.player.YVelocity = 0
 		} else {
-			goToStartPosition()
+			g.player.X, g.player.Y = g.level.StartPosition()
 		}
 	}
 	xCellRune := ' '
-	if xCell := (player.x-frameWidth/2)/(frameWidth*26) + 64; xCell > 64 {
+	if xCell := (g.player.X-util.FrameWidth/2)/(util.FrameWidth*26) + 64; xCell > 64 {
 		xCellRune = rune(xCell)
 	}
-	pos := fmt.Sprintf("%c%c:%d", xCellRune, rune(((player.x-frameWidth/2)/frameWidth)%26+65), player.y/frameWidth+1)
+	pos := fmt.Sprintf("%c%c:%d", xCellRune, rune(((g.player.X-util.FrameWidth/2)/util.FrameWidth)%26+65), g.player.Y/util.FrameWidth+1)
 
-	message = message + fmt.Sprintf("\n[%s](r)eload (s)pawn\ntps %d fps %d", pos, int(ebiten.CurrentTPS()), int(ebiten.CurrentFPS()))
+	return fmt.Sprintf("\n[%s](r)eload (s)pawn\ntps %d fps %d", pos, int(ebiten.CurrentTPS()), int(ebiten.CurrentFPS()))
 
 }

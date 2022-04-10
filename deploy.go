@@ -3,6 +3,6 @@
 
 package main
 
-func levelEditor() {
-	return
+func levelEditor(g *Game) string {
+	return nil
 }
