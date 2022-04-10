@@ -33,16 +33,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	runnerOP.GeoM.Translate(sys.ScreenWidth/2, float64(g.player.Y))
 	i := (g.count / 5) % len(*g.player.Slides)
 
-	for _, actor := range g.level.Actors {
-		if actor.Exists {
-			if actor.Kind == "c" {
-				if actor.X > viewPortOffset || actor.X < viewPortOffset+sys.ScreenWidth/2-sys.FrameWidth {
-					coinOp := &ebiten.DrawImageOptions{}
-					coinOp.GeoM.Translate(-float64(viewPortOffset-actor.X), float64(actor.Y))
-					frameBuffer.DrawImage(g.coin.Slides[(g.count/g.coin.AnimationSpeed)%g.coin.NumSlides], coinOp)
-				}
+	for _, coin := range g.level.Coin.Coins {
+		if coin.Uncollected {
+			if coin.X > viewPortOffset || coin.X < viewPortOffset+sys.ScreenWidth/2-sys.FrameWidth {
+				coinOp := &ebiten.DrawImageOptions{}
+				coinOp.GeoM.Translate(-float64(viewPortOffset-coin.X), float64(coin.Y))
+				frameBuffer.DrawImage(g.level.Coin.Slides[(g.count/g.level.Coin.AnimationSpeed)%g.level.Coin.NumSlides], coinOp)
 			}
-
 		}
 	}
 

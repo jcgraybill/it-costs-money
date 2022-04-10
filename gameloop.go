@@ -124,32 +124,24 @@ func (g *Game) Update() error {
 	}
 
 	// Pick up coins
-	for _, actor := range g.level.Actors {
-		if actor.Exists && actor.Kind == "c" && actor.X+sys.FrameWidth/2 > g.player.X-sys.FrameWidth && actor.X+sys.FrameWidth/2 < g.player.X && actor.Y+sys.FrameHeight/2 > g.player.Y && actor.Y+sys.FrameHeight/2 < g.player.Y+sys.FrameHeight {
-			actor.Exists = false
+	for _, coin := range g.level.Coin.Coins {
+		if coin.Uncollected && coin.X+sys.FrameWidth/2 > g.player.X-sys.FrameWidth && coin.X+sys.FrameWidth/2 < g.player.X && coin.Y+sys.FrameHeight/2 > g.player.Y && coin.Y+sys.FrameHeight/2 < g.player.Y+sys.FrameHeight {
+			coin.Uncollected = false
 			g.player.Coins++
-			// TODO noticeable framerate drop when sounds play
-			g.coin.AudioPlayers[g.count%5].Rewind()
-			g.coin.AudioPlayers[g.count%5].Play()
+
+			g.level.Coin.PlaySound(g.count)
 		}
 	}
 
 	// Fall in holes
-	// TODO make player lose money when falling in a hole
-	if g.player.Y > sys.ScreenHeight*4 {
-		spawnX, spawnY := 0, 0
-		for _, actor := range g.level.Actors {
-			if actor.Kind == "s" {
-				if actor.X > spawnX && actor.X < g.player.X {
-					spawnX = actor.X + sys.FrameWidth
-					spawnY = actor.Y
-				}
 
-			}
-		}
-		g.player.X = spawnX
-		g.player.Y = spawnY
+	if g.player.Y > sys.ScreenHeight*4 {
+		g.player.X, g.player.Y = g.level.PreviousSpawn(g.player.X, g.player.Y)
 		g.player.YVelocity = 0
+		g.player.Coins = g.player.Coins - g.level.CoinHolePenalty
+		if g.player.Coins < 0 {
+			g.player.Coins = 0
+		}
 	}
 
 	message = fmt.Sprintf("Gather coins and bring them to the green chest.\nIt costs money to be alive!\nYour coins: %d", g.player.Coins)

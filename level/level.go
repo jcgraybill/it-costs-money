@@ -7,25 +7,24 @@ import (
 	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/audio"
+	"github.com/jcgraybill/it-costs-money/level/coin"
+	"github.com/jcgraybill/it-costs-money/level/spawn"
 	"github.com/jcgraybill/it-costs-money/sys"
 )
 
 type Level struct {
 	BgImage1, BgImage2, BgImage3, LevelImage, LevelBackgroundImage, LevelForegroundImage *ebiten.Image
-	CoinDecay, MoveSpeed, JumpHeight                                                     int
+	CoinDecay, CoinHolePenalty, MoveSpeed, JumpHeight                                    int
 	Gravity                                                                              float64
-	Actors                                                                               []*Actor
+	Coin                                                                                 coin.Coin
+	Spawns                                                                               []*spawn.Spawn
 }
 
-type Actor struct {
-	X, Y   int
-	Exists bool
-	Kind   string
-}
-
-func New(levelNumber int, tiles []*ebiten.Image) Level {
+func New(levelNumber int, tiles []*ebiten.Image, audioContext *audio.Context) Level {
 	var l Level
 	l.CoinDecay = 90
+	l.CoinHolePenalty = 5
 	l.MoveSpeed = 4
 	l.JumpHeight = 8
 	l.Gravity = 0.5
@@ -35,8 +34,8 @@ func New(levelNumber int, tiles []*ebiten.Image) Level {
 	l.LevelImage = generateLevelImage(fmt.Sprintf("leveldata/level_%d_main.csv", levelNumber), tiles)
 	l.LevelBackgroundImage = generateLevelImage(fmt.Sprintf("leveldata/level_%d_background.csv", levelNumber), tiles)
 	l.LevelForegroundImage = generateLevelImage(fmt.Sprintf("leveldata/level_%d_foreground.csv", levelNumber), tiles)
-
-	l.Actors = loadActors(fmt.Sprintf("leveldata/level_%d_actors.csv", levelNumber))
+	l.Coin = coin.New(audioContext)
+	l.Coin.Coins, l.Spawns = loadActors(fmt.Sprintf("leveldata/level_%d_actors.csv", levelNumber))
 	return l
 }
 
@@ -87,37 +86,26 @@ func generateLevelImage(path string, tiles []*ebiten.Image) *ebiten.Image {
 	return levelImage
 }
 
-func loadActors(path string) []*Actor {
-	actors := make([]*Actor, 0)
-
+func loadActors(path string) ([]*coin.Coins, []*spawn.Spawn) {
+	coins := make([]*coin.Coins, 0)
+	spawns := make([]*spawn.Spawn, 0)
 	data, err := sys.GameData(path)
 
 	if err == nil {
 		for row, line := range strings.Split(string(data), "\n") {
 			for col, cell := range strings.Split(line, ",") {
 				if cell != "0" && cell != "" {
-					actors = append(actors, &Actor{X: col * sys.FrameWidth, Y: row * sys.FrameHeight, Exists: true, Kind: cell})
+					if cell == "s" {
+						spawns = append(spawns, &spawn.Spawn{X: col * sys.FrameWidth, Y: row * sys.FrameHeight})
+					} else if cell == "c" {
+						coins = append(coins, &coin.Coins{X: col * sys.FrameWidth, Y: row * sys.FrameHeight, Uncollected: true})
+					}
+
 				}
 			}
 		}
 	} else {
 		panic(err)
 	}
-	return actors
-}
-
-func (l Level) StartPosition() (x, y int) {
-	x, y = 0, 0
-	for _, actor := range l.Actors {
-		if actor.Kind == "s" {
-			if x == 0 {
-				x = actor.X + sys.FrameWidth
-				y = actor.Y
-			} else if x > actor.X {
-				x = actor.X + sys.FrameWidth
-				y = actor.Y
-			}
-		}
-	}
-	return
+	return coins, spawns
 }

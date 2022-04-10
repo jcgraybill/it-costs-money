@@ -15,30 +15,13 @@ import (
 func levelEditor(g *Game) string {
 	// Live reload of level
 	if inpututil.IsKeyJustPressed(ebiten.KeyR) {
-		g.level = level.New(0, g.tiles)
+		g.level = level.New(1, g.tiles, audioContext)
 	}
 
 	// skip ahead to next spawn point
 	if inpututil.IsKeyJustPressed(ebiten.KeyS) {
-		spawnX, spawnY := g.level.LevelImage.Bounds().Dx(), 0
-		foundSpawn := false
-		for _, actor := range g.level.Actors {
-			if actor.Kind == "s" {
-				if actor.X > g.player.X && actor.X < spawnX {
-					spawnX = actor.X + sys.FrameWidth
-					spawnY = actor.Y
-					foundSpawn = true
-				}
-
-			}
-		}
-		if foundSpawn {
-			g.player.X = spawnX
-			g.player.Y = spawnY
-			g.player.YVelocity = 0
-		} else {
-			g.player.X, g.player.Y = g.level.StartPosition()
-		}
+		g.player.X, g.player.Y = g.level.NextSpawn(g.player.X, g.player.Y)
+		g.player.YVelocity = 0
 	}
 
 	// display current coordinates of player
