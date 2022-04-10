@@ -6,7 +6,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
-	"github.com/hajimehoshi/ebiten/v2/audio/wav"
+	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
 	"github.com/jcgraybill/it-costs-money/sys"
 )
 
@@ -33,11 +33,11 @@ func New(audioContext *audio.Context) Coin {
 	c.Coins = make([]*Coins, 0)
 
 	for i := 0; i < 5; i++ {
-		audioBytes, err := sys.GameData(fmt.Sprintf("assets/Coins_Grab_0%d.wav", i))
+		audioBytes, err := sys.GameData(fmt.Sprintf("assets/Coins_Grab_0%d.ogg", i))
 		if err != nil {
 			panic(err)
 		}
-		d, err := wav.Decode(audioContext, bytes.NewReader(audioBytes))
+		d, err := vorbis.Decode(audioContext, bytes.NewReader(audioBytes))
 		if err != nil {
 			panic(err)
 		}
@@ -50,7 +50,6 @@ func New(audioContext *audio.Context) Coin {
 	return c
 }
 
-// FIXME noticeable framerate drop when sounds play
 func (c Coin) PlaySound(count int) {
 	c.AudioPlayers[count%5].Rewind()
 	c.AudioPlayers[count%5].Play()

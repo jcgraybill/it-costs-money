@@ -79,7 +79,7 @@ func pickUpCoins(g *Game) {
 		if coin.Uncollected && coin.X+sys.FrameWidth/2 > g.player.X-sys.FrameWidth && coin.X+sys.FrameWidth/2 < g.player.X && coin.Y+sys.FrameHeight/2 > g.player.Y && coin.Y+sys.FrameHeight/2 < g.player.Y+sys.FrameHeight {
 			coin.Uncollected = false
 			g.player.Coins++
-			g.level.Coin.PlaySound(g.count)
+			go g.level.Coin.PlaySound(g.count)
 		}
 	}
 }
