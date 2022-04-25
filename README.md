@@ -5,7 +5,7 @@ Currently in very preliminary state. Builds and runs on Windows, *theoretically*
 
 ![screenshot](https://github.com/jcgraybill/it-costs-money/blob/main/screenshot.png)
 
-Built in [golang](https://go.dev/) using the [ebiten](https://ebiten.org/) 2D game library. Tileset thanks to [ludicarts](https://ludicarts.itch.io/) *[license](https://www.ludicarts.com/license-2/)*, sounds [GameDev Market](https://www.gamedevmarket.net/) *[license](https://static.gamedevmarket.net/terms-conditions/#pro-licence)*, little running guy yoinked from the [ebiten animation demo](https://ebiten.org/examples/animation.html) (thanks!).
+Built in [golang](https://go.dev/) using the [ebiten](https://ebiten.org/) 2D game library. Tileset thanks to [ludicarts](https://ludicarts.itch.io/) *[license](https://www.ludicarts.com/license-2/)*, sounds [GameDev Market](https://www.gamedevmarket.net/) *[license](https://static.gamedevmarket.net/terms-conditions/#pro-licence)*, little running guy yoinked from the [ebiten animation demo](https://ebiten.org/examples/animation.html) (thanks!), typeface [Modak](https://github.com/EkType/Modak) *[license](https://github.com/EkType/Modak/blob/master/OFL.txt).
 
 # Running the game
 With go installed, download and run the game with:
