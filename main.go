@@ -8,6 +8,7 @@ import (
 	"github.com/jcgraybill/it-costs-money/level"
 	"github.com/jcgraybill/it-costs-money/player"
 	"github.com/jcgraybill/it-costs-money/sys"
+	"golang.org/x/image/font"
 )
 
 type Game struct {
@@ -15,6 +16,7 @@ type Game struct {
 	level  level.Level
 	player player.Player
 	tiles  []*ebiten.Image
+	ttf    *font.Face
 }
 
 var frameBuffer *ebiten.Image
@@ -30,6 +32,7 @@ func main() {
 
 	var g Game
 	g.count = 0
+	g.ttf = sys.Font()
 	g.tiles = sys.LoadSpriteSheet("assets/1-tiles-city.png")
 	g.tiles = append(g.tiles, sys.LoadSpriteSheet("assets/2-tiles-country.png")...)
 	g.tiles = append(g.tiles, sys.LoadSpriteSheet("assets/3-objects-city.png")...)

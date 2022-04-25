@@ -7,6 +7,8 @@ import (
 	_ "image/png"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/opentype"
 )
 
 func LoadImage(path string) *ebiten.Image {
@@ -37,4 +39,24 @@ func LoadSpriteSheet(path string) []*ebiten.Image {
 	}
 	sprites[i] = sprites[0]
 	return sprites
+}
+
+func Font() *font.Face {
+	ttbytes, err := GameData("assets/Modak-Regular.ttf")
+	if err == nil {
+		tt, err := opentype.Parse(ttbytes)
+		if err == nil {
+			fontface, err := opentype.NewFace(tt, &opentype.FaceOptions{
+				Size:    36,
+				DPI:     72,
+				Hinting: font.HintingFull,
+			})
+			if err == nil {
+				return &fontface
+			}
+			panic(err)
+		}
+		panic(err)
+	}
+	panic(err)
 }

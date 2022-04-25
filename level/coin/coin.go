@@ -2,11 +2,10 @@ package coin
 
 import (
 	"bytes"
-	"fmt"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
-	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
+	"github.com/hajimehoshi/ebiten/v2/audio/wav"
 	"github.com/jcgraybill/it-costs-money/sys"
 )
 
@@ -15,6 +14,7 @@ type Coin struct {
 	NumSlides      int
 	AnimationSpeed int
 	AudioPlayers   [5]*audio.Player
+	audioPlayer    *audio.Player
 	Coins          []*Coins
 }
 
@@ -32,25 +32,22 @@ func New(audioContext *audio.Context) Coin {
 
 	c.Coins = make([]*Coins, 0)
 
-	for i := 0; i < 5; i++ {
-		audioBytes, err := sys.GameData(fmt.Sprintf("assets/Coins_Grab_0%d.ogg", i))
-		if err != nil {
-			panic(err)
-		}
-		d, err := vorbis.Decode(audioContext, bytes.NewReader(audioBytes))
-		if err != nil {
-			panic(err)
-		}
-		c.AudioPlayers[i], err = audioContext.NewPlayer(d)
-		if err != nil {
-			panic(err)
-		}
-
+	audioBytes, err := sys.GameData("assets/smb_coin.wav")
+	if err != nil {
+		panic(err)
+	}
+	d, err := wav.Decode(audioContext, bytes.NewReader(audioBytes))
+	if err != nil {
+		panic(err)
+	}
+	c.audioPlayer, err = audioContext.NewPlayer(d)
+	if err != nil {
+		panic(err)
 	}
 	return c
 }
 
 func (c Coin) PlaySound(count int) {
-	c.AudioPlayers[count%5].Rewind()
-	c.AudioPlayers[count%5].Play()
+	c.audioPlayer.Rewind()
+	c.audioPlayer.Play()
 }

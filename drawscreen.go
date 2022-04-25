@@ -1,10 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"image"
+	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/jcgraybill/it-costs-money/sys"
 )
 
@@ -45,8 +48,15 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	frameBuffer.DrawImage((*g.player.Slides)[i], runnerOP)
 	frameBuffer.DrawImage(g.level.LevelForegroundImage.SubImage(levelViewFinder).(*ebiten.Image), nil)
+
 	ebitenutil.DebugPrint(frameBuffer, message)
 	screen.DrawImage(frameBuffer, nil)
+
+	coins := fmt.Sprintf("Coins: %d", g.player.Coins)
+	textBounds := text.BoundString(*g.ttf, coins)
+	text.Draw(screen, coins, *g.ttf, sys.ScreenWidth-textBounds.Dx()-18, textBounds.Dy()+2, color.RGBA{0x00, 0x00, 0x00, 0xff})
+	text.Draw(screen, coins, *g.ttf, sys.ScreenWidth-textBounds.Dx()-20, textBounds.Dy(), color.RGBA{0xd4, 0xaf, 0x47, 0xff})
+
 }
 
 func parallax(image *ebiten.Image, offset int, speed int) {

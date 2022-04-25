@@ -12,7 +12,7 @@ import (
 func (g *Game) Update() error {
 	g.count++
 	g.player.Slides = &g.player.IdleFrames
-	message = fmt.Sprintf("Gather coins and bring them to the green chest.\nIt costs money to be alive!\nYour coins: %d", g.player.Coins)
+	message = "Gather coins and bring them to the green chest.\nIt costs money to be alive!\n"
 
 	touchingGround, touchingLeft, leftAdjacent, touchingRight, rightAdjacent, touchingTop := detectCollisions(g)
 
