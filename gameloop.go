@@ -12,7 +12,6 @@ import (
 func (g *Game) Update() error {
 	g.count++
 	g.player.Slides = &g.player.IdleFrames
-	message = "Gather coins and bring them to the green chest.\nIt costs money to be alive!\n"
 
 	touchingGround, touchingLeft, leftAdjacent, touchingRight, rightAdjacent, touchingTop := detectCollisions(g)
 
@@ -27,6 +26,8 @@ func (g *Game) Update() error {
 
 	if g.count%g.level.CoinDecay == 0 && g.player.Coins > 0 {
 		g.player.Coins--
+		g.AudioPlayers[g.count%5].Rewind()
+		g.AudioPlayers[g.count%5].Play()
 	}
 
 	if touchingGround {
@@ -41,26 +42,31 @@ func (g *Game) Update() error {
 
 	fallInHoles(g)
 
-	message = message + levelEditor(g)
+	message = levelEditor(g)
 
 	return nil
 }
 
 func levelEnd(g *Game) {
-	message = fmt.Sprintf("Congratulations! You collected %d coins.\nG: try again", g.player.Coins)
+
+	var message string
+	if g.level.LevelNumber == 1 {
+		message = fmt.Sprintf("You collected %d coins.\nG: try again\nN: next level", g.player.Coins)
+	} else {
+		message = fmt.Sprintf("Thanks for playing.\nMore content (including this level)\ncoming soon.")
+	}
+	sys.WriteMessage(g.level.LevelBackgroundImage.Bounds().Dx()-600, 150, message, g.level.LevelBackgroundImage, g.ttf)
+
 	if inpututil.IsKeyJustPressed(ebiten.KeyG) {
 		g.level = level.New(g.level.LevelNumber, g.tiles, audioContext)
 		g.player.X, g.player.Y = g.level.StartPosition()
 		g.player.Coins = 0
 	}
-	if g.level.LevelNumber == 1 {
-		message = message + "\nN:next level"
-		if inpututil.IsKeyJustPressed(ebiten.KeyN) {
-			g.level.EndAudio()
-			g.level = level.New(2, g.tiles, audioContext)
-			g.player.X, g.player.Y = g.level.StartPosition()
-			g.player.Coins = 0
-		}
+	if g.level.LevelNumber == 1 && inpututil.IsKeyJustPressed(ebiten.KeyN) {
+		g.level.EndAudio()
+		g.level = level.New(2, g.tiles, audioContext)
+		g.player.X, g.player.Y = g.level.StartPosition()
+		g.player.Coins = 0
 	}
 }
 

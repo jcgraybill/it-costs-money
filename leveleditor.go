@@ -31,6 +31,6 @@ func levelEditor(g *Game) string {
 	}
 	pos := fmt.Sprintf("%c%c:%d", xCellRune, rune(((g.player.X-sys.FrameWidth/2)/sys.FrameWidth)%26+65), g.player.Y/sys.FrameWidth+1)
 
-	return fmt.Sprintf("\n[%s](r)eload (s)pawn\ntps %d fps %d", pos, int(ebiten.CurrentTPS()), int(ebiten.CurrentFPS()))
+	return fmt.Sprintf("level edit mode\n[%s](r)eload (s)pawn\ntps %d fps %d", pos, int(ebiten.CurrentTPS()), int(ebiten.CurrentFPS()))
 
 }

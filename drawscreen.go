@@ -49,7 +49,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	frameBuffer.DrawImage((*g.player.Slides)[i], runnerOP)
 	frameBuffer.DrawImage(g.level.LevelForegroundImage.SubImage(levelViewFinder).(*ebiten.Image), nil)
 
-	ebitenutil.DebugPrint(frameBuffer, message)
+	if message != "" {
+		ebitenutil.DebugPrint(frameBuffer, message)
+	}
 	screen.DrawImage(frameBuffer, nil)
 
 	coins := fmt.Sprintf("Coins: %d", g.player.Coins)
