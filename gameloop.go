@@ -56,6 +56,7 @@ func levelEnd(g *Game) {
 	if g.level.LevelNumber == 1 {
 		message = message + "\nN:next level"
 		if inpututil.IsKeyJustPressed(ebiten.KeyN) {
+			g.level.EndAudio()
 			g.level = level.New(2, g.tiles, audioContext)
 			g.player.X, g.player.Y = g.level.StartPosition()
 			g.player.Coins = 0

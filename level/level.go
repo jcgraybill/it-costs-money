@@ -1,6 +1,7 @@
 package level
 
 import (
+	"bytes"
 	"fmt"
 	_ "image/png"
 	"strconv"
@@ -8,6 +9,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
+	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
 	"github.com/jcgraybill/it-costs-money/level/coin"
 	"github.com/jcgraybill/it-costs-money/level/spawn"
 	"github.com/jcgraybill/it-costs-money/sys"
@@ -19,6 +21,7 @@ type Level struct {
 	Gravity                                                                              float64
 	Coin                                                                                 coin.Coin
 	Spawns                                                                               []*spawn.Spawn
+	ambience                                                                             *audio.Player
 }
 
 func New(levelNumber int, tiles []*ebiten.Image, audioContext *audio.Context) Level {
@@ -37,6 +40,25 @@ func New(levelNumber int, tiles []*ebiten.Image, audioContext *audio.Context) Le
 	l.LevelForegroundImage = generateLevelImage(fmt.Sprintf("leveldata/level_%d_foreground.csv", l.LevelNumber), tiles)
 	l.Coin = coin.New(audioContext)
 	l.Coin.Coins, l.Spawns = loadActors(fmt.Sprintf("leveldata/level_%d_actors.csv", levelNumber))
+
+	audioBytes, err := sys.GameData(fmt.Sprintf("assets/ambience-level-%d.ogg", levelNumber))
+	if err == nil {
+		d, err := vorbis.Decode(audioContext, bytes.NewReader(audioBytes))
+		if err == nil {
+			s := audio.NewInfiniteLoop(d, d.Length())
+			l.ambience, err = audioContext.NewPlayer(s)
+			if err == nil {
+				l.ambience.Play()
+			} else {
+				panic(err)
+			}
+		} else {
+			panic(err)
+		}
+	} else {
+		panic(err)
+	}
+
 	return l
 }
 
@@ -109,4 +131,8 @@ func loadActors(path string) ([]*coin.Coins, []*spawn.Spawn) {
 		panic(err)
 	}
 	return coins, spawns
+}
+
+func (l *Level) EndAudio() {
+	l.ambience.Pause()
 }
