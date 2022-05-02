@@ -35,10 +35,9 @@ func New() Player {
 	p.FacingLeft = false
 	p.WileECoyote = wileECoyoteFrames
 
-	runner := sys.LoadSpriteSheet("assets/runner.png")
-	p.IdleFrames = runner[1:6]
-	p.RunFrames = runner[9:17]
-	p.FallFrames = runner[17:21]
+	p.IdleFrames = sys.RunnerTiles[1:6]
+	p.RunFrames = sys.RunnerTiles[9:17]
+	p.FallFrames = sys.RunnerTiles[17:21]
 	p.Coins = 0
 	p.Slides = &p.IdleFrames
 	return p

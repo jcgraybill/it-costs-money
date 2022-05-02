@@ -7,9 +7,29 @@ import (
 	_ "image/png"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"golang.org/x/image/font"
-	"golang.org/x/image/font/opentype"
 )
+
+const (
+	CoinSlides         = 6
+	CoinAnimationSpeed = 10
+)
+
+var Tiles []*ebiten.Image
+var CoinTiles []*ebiten.Image
+var RunnerTiles []*ebiten.Image
+
+func init() {
+	Tiles = loadSpriteSheet("assets/1-tiles-city.png")
+	Tiles = append(Tiles, loadSpriteSheet("assets/2-tiles-country.png")...)
+	Tiles = append(Tiles, loadSpriteSheet("assets/3-objects-city.png")...)
+	Tiles = append(Tiles, loadSpriteSheet("assets/4-objects-country.png")...)
+
+	coinSprites := loadSpriteSheet("assets/coin.png")
+	CoinTiles = coinSprites[1:7]
+
+	RunnerTiles = loadSpriteSheet("assets/runner.png")
+
+}
 
 func LoadImage(path string) *ebiten.Image {
 	imgBytes, err := GameData(path)
@@ -23,7 +43,7 @@ func LoadImage(path string) *ebiten.Image {
 	panic(err)
 }
 
-func LoadSpriteSheet(path string) []*ebiten.Image {
+func loadSpriteSheet(path string) []*ebiten.Image {
 	numberofSprites := 0
 	spriteSheet := LoadImage(path)
 	numberofSprites += spriteSheet.Bounds().Dx() / FrameWidth * spriteSheet.Bounds().Dy() / FrameHeight
@@ -39,24 +59,4 @@ func LoadSpriteSheet(path string) []*ebiten.Image {
 	}
 	sprites[i] = sprites[0]
 	return sprites
-}
-
-func Font() *font.Face {
-	ttbytes, err := GameData("assets/Modak-Regular.ttf")
-	if err == nil {
-		tt, err := opentype.Parse(ttbytes)
-		if err == nil {
-			fontface, err := opentype.NewFace(tt, &opentype.FaceOptions{
-				Size:    36,
-				DPI:     72,
-				Hinting: font.HintingFull,
-			})
-			if err == nil {
-				return &fontface
-			}
-			panic(err)
-		}
-		panic(err)
-	}
-	panic(err)
 }

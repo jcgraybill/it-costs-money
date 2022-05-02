@@ -41,7 +41,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			if coin.X > viewPortOffset || coin.X < viewPortOffset+sys.ScreenWidth/2-sys.FrameWidth {
 				coinOp := &ebiten.DrawImageOptions{}
 				coinOp.GeoM.Translate(-float64(viewPortOffset-coin.X), float64(coin.Y))
-				frameBuffer.DrawImage(g.level.Coin.Slides[(g.count/g.level.Coin.AnimationSpeed)%g.level.Coin.NumSlides], coinOp)
+				frameBuffer.DrawImage(sys.CoinTiles[(g.count/sys.CoinAnimationSpeed)%sys.CoinSlides], coinOp)
 			}
 		}
 	}
@@ -55,9 +55,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.DrawImage(frameBuffer, nil)
 
 	coins := fmt.Sprintf("Coins: %d", g.player.Coins)
-	textBounds := text.BoundString(*g.ttf, coins)
-	text.Draw(screen, coins, *g.ttf, sys.ScreenWidth-textBounds.Dx()-18, textBounds.Dy()+2, color.RGBA{0x00, 0x00, 0x00, 0xff})
-	text.Draw(screen, coins, *g.ttf, sys.ScreenWidth-textBounds.Dx()-20, textBounds.Dy(), color.RGBA{0xd4, 0xaf, 0x47, 0xff})
+	textBounds := text.BoundString(sys.Ttf, coins)
+	text.Draw(screen, coins, sys.Ttf, sys.ScreenWidth-textBounds.Dx()-18, textBounds.Dy()+2, color.RGBA{0x00, 0x00, 0x00, 0xff})
+	text.Draw(screen, coins, sys.Ttf, sys.ScreenWidth-textBounds.Dx()-20, textBounds.Dy(), color.RGBA{0xd4, 0xaf, 0x47, 0xff})
 
 }
 

@@ -24,7 +24,7 @@ type Level struct {
 	ambience                                                                             *audio.Player
 }
 
-func New(levelNumber int, tiles []*ebiten.Image, audioContext *audio.Context) Level {
+func New(levelNumber int) Level {
 	var l Level
 	l.LevelNumber = levelNumber
 	l.CoinDecay = 90
@@ -35,18 +35,18 @@ func New(levelNumber int, tiles []*ebiten.Image, audioContext *audio.Context) Le
 	l.BgImage1 = sys.LoadImage("assets/Background_Layer_1.png")
 	l.BgImage2 = sys.LoadImage("assets/Background_Layer_2.png")
 	l.BgImage3 = sys.LoadImage("assets/Background_Layer_3.png")
-	l.LevelImage = generateLevelImage(fmt.Sprintf("leveldata/level_%d_main.csv", l.LevelNumber), tiles)
-	l.LevelBackgroundImage = generateLevelImage(fmt.Sprintf("leveldata/level_%d_background.csv", l.LevelNumber), tiles)
-	l.LevelForegroundImage = generateLevelImage(fmt.Sprintf("leveldata/level_%d_foreground.csv", l.LevelNumber), tiles)
-	l.Coin = coin.New(audioContext)
+	l.LevelImage = generateLevelImage(fmt.Sprintf("leveldata/level_%d_main.csv", l.LevelNumber))
+	l.LevelBackgroundImage = generateLevelImage(fmt.Sprintf("leveldata/level_%d_background.csv", l.LevelNumber))
+	l.LevelForegroundImage = generateLevelImage(fmt.Sprintf("leveldata/level_%d_foreground.csv", l.LevelNumber))
+	l.Coin = coin.New()
 	l.Coin.Coins, l.Spawns = loadActors(fmt.Sprintf("leveldata/level_%d_actors.csv", levelNumber))
 
 	audioBytes, err := sys.GameData(fmt.Sprintf("assets/ambience-level-%d.ogg", levelNumber))
 	if err == nil {
-		d, err := vorbis.Decode(audioContext, bytes.NewReader(audioBytes))
+		d, err := vorbis.Decode(sys.AudioContext, bytes.NewReader(audioBytes))
 		if err == nil {
 			s := audio.NewInfiniteLoop(d, d.Length())
-			l.ambience, err = audioContext.NewPlayer(s)
+			l.ambience, err = sys.AudioContext.NewPlayer(s)
 			if err == nil {
 				l.ambience.Play()
 			} else {
@@ -62,7 +62,7 @@ func New(levelNumber int, tiles []*ebiten.Image, audioContext *audio.Context) Le
 	return l
 }
 
-func generateLevelImage(path string, tiles []*ebiten.Image) *ebiten.Image {
+func generateLevelImage(path string) *ebiten.Image {
 	levelData := make([][]int, sys.ScreenHeight/sys.FrameHeight)
 	levelWidth := 0
 
@@ -99,10 +99,10 @@ func generateLevelImage(path string, tiles []*ebiten.Image) *ebiten.Image {
 	levelImage := ebiten.NewImage(levelWidth, sys.ScreenHeight)
 	for row, line := range levelData {
 		for col, cell := range line {
-			if cell > 0 && cell < len(tiles) {
+			if cell > 0 && cell < len(sys.Tiles) {
 				op := &ebiten.DrawImageOptions{}
 				op.GeoM.Translate(float64(col*sys.FrameWidth), float64(row*sys.FrameHeight))
-				levelImage.DrawImage(tiles[cell], op)
+				levelImage.DrawImage(sys.Tiles[cell], op)
 			}
 		}
 	}

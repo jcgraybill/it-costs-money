@@ -15,7 +15,7 @@ import (
 func levelEditor(g *Game) string {
 	// Live reload of level
 	if inpututil.IsKeyJustPressed(ebiten.KeyR) {
-		g.level = level.New(g.level.LevelNumber, g.tiles, audioContext)
+		g.level = level.New(g.level.LevelNumber)
 	}
 
 	// skip ahead to next spawn point

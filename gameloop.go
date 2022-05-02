@@ -24,11 +24,7 @@ func (g *Game) Update() error {
 		return nil
 	}
 
-	if g.count%g.level.CoinDecay == 0 && g.player.Coins > 0 {
-		g.player.Coins--
-		g.AudioPlayers[g.count%5].Rewind()
-		g.AudioPlayers[g.count%5].Play()
-	}
+	go loseCoins(g)
 
 	if touchingGround {
 		jump(g)
@@ -47,6 +43,13 @@ func (g *Game) Update() error {
 	return nil
 }
 
+func loseCoins(g *Game) {
+	if g.count%g.level.CoinDecay == 0 && g.player.Coins > 0 {
+		g.player.Coins--
+		sys.DropCoin(g.count)
+	}
+}
+
 func levelEnd(g *Game) {
 
 	var message string
@@ -55,16 +58,16 @@ func levelEnd(g *Game) {
 	} else {
 		message = fmt.Sprintf("Thanks for playing.\nMore content (including this level)\ncoming soon.")
 	}
-	sys.WriteMessage(g.level.LevelBackgroundImage.Bounds().Dx()-600, 150, message, g.level.LevelBackgroundImage, g.ttf)
+	sys.WriteMessage(g.level.LevelBackgroundImage.Bounds().Dx()-600, 150, message, g.level.LevelBackgroundImage)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyG) {
-		g.level = level.New(g.level.LevelNumber, g.tiles, audioContext)
+		g.level = level.New(g.level.LevelNumber)
 		g.player.X, g.player.Y = g.level.StartPosition()
 		g.player.Coins = 0
 	}
 	if g.level.LevelNumber == 1 && inpututil.IsKeyJustPressed(ebiten.KeyN) {
 		g.level.EndAudio()
-		g.level = level.New(2, g.tiles, audioContext)
+		g.level = level.New(2)
 		g.player.X, g.player.Y = g.level.StartPosition()
 		g.player.Coins = 0
 	}
@@ -86,7 +89,7 @@ func pickUpCoins(g *Game) {
 		if coin.Uncollected && coin.X+sys.FrameWidth/2 > g.player.X-sys.FrameWidth && coin.X+sys.FrameWidth/2 < g.player.X && coin.Y+sys.FrameHeight/2 > g.player.Y && coin.Y+sys.FrameHeight/2 < g.player.Y+sys.FrameHeight {
 			coin.Uncollected = false
 			g.player.Coins++
-			go g.level.Coin.PlaySound(g.count)
+			go sys.PickupCoin()
 		}
 	}
 }
