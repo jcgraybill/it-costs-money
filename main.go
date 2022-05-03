@@ -32,7 +32,7 @@ func main() {
 	g.player = player.New()
 	g.player.X, g.player.Y = g.level.StartPosition()
 	sys.WriteMessage(540, 150, "run and jump with arrow keys\ncollect coins, but hurry up!\nyou lose coins over time\n(it costs money to be alive)", g.level.LevelBackgroundImage)
-
+	sys.PlayLevelAmbience(1)
 	if err := ebiten.RunGame(&g); err != nil {
 		panic(err)
 	}

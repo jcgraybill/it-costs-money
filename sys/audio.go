@@ -12,6 +12,7 @@ import (
 var AudioContext *audio.Context
 var dropCoinSound [5]*audio.Player
 var pickupCoinSound *audio.Player
+var ambientSound *audio.Player
 
 func init() {
 	AudioContext = audio.NewContext(44100)
@@ -54,4 +55,24 @@ func DropCoin(count int) {
 func PickupCoin() {
 	pickupCoinSound.Rewind()
 	pickupCoinSound.Play()
+}
+
+func PlayLevelAmbience(level int) {
+	audioBytes, err := GameData(fmt.Sprintf("assets/ambience-level-%d.ogg", level))
+	if err == nil {
+		d, err := vorbis.Decode(AudioContext, bytes.NewReader(audioBytes))
+		if err == nil {
+			s := audio.NewInfiniteLoop(d, d.Length())
+			ambientSound, err = AudioContext.NewPlayer(s)
+			if err == nil {
+				ambientSound.Play()
+			} else {
+				panic(err)
+			}
+		} else {
+			panic(err)
+		}
+	} else {
+		panic(err)
+	}
 }
