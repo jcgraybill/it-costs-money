@@ -6,7 +6,6 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
-	"github.com/hajimehoshi/ebiten/v2/audio/wav"
 )
 
 var AudioContext *audio.Context
@@ -33,11 +32,11 @@ func init() {
 		}
 	}
 
-	audioBytes, err := GameData("assets/smb_coin.wav")
+	audioBytes, err := GameData("assets/coin.ogg")
 	if err != nil {
 		panic(err)
 	}
-	d, err := wav.Decode(AudioContext, bytes.NewReader(audioBytes))
+	d, err := vorbis.Decode(AudioContext, bytes.NewReader(audioBytes))
 	if err != nil {
 		panic(err)
 	}
