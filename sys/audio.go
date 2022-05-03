@@ -76,3 +76,9 @@ func PlayLevelAmbience(level int) {
 		panic(err)
 	}
 }
+
+func StopLevelAmbience() {
+	if ambientSound.IsPlaying() {
+		ambientSound.Pause()
+	}
+}

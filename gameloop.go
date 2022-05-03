@@ -67,6 +67,7 @@ func levelEnd(g *Game) {
 	}
 	if g.level.LevelNumber == 1 && inpututil.IsKeyJustPressed(ebiten.KeyN) {
 		g.level = level.New(2)
+		sys.StopLevelAmbience()
 		sys.PlayLevelAmbience(2)
 		g.player.X, g.player.Y = g.level.StartPosition()
 		g.player.Coins = 0
@@ -117,9 +118,8 @@ func correctTerrainOverlap(g *Game, touchingGround, touchingLeft, touchingRight,
 
 }
 
-// TODO allow WASD
 func run(g *Game, touchingLeft, leftAdjacent, touchingRight, rightAdjacent bool) {
-	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) {
+	if ebiten.IsKeyPressed(ebiten.KeyArrowRight) || ebiten.IsKeyPressed(ebiten.KeyD) {
 		g.player.FacingLeft = false
 		if g.player.X < g.level.LevelImage.Bounds().Dx()-sys.ScreenWidth/2+sys.FrameWidth/2-1 && !touchingRight && !rightAdjacent {
 			g.player.Slides = &g.player.RunFrames
@@ -127,7 +127,7 @@ func run(g *Game, touchingLeft, leftAdjacent, touchingRight, rightAdjacent bool)
 		}
 	}
 
-	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) {
+	if ebiten.IsKeyPressed(ebiten.KeyArrowLeft) || ebiten.IsKeyPressed(ebiten.KeyA) {
 		g.player.FacingLeft = true
 		if g.player.X > sys.ScreenWidth/2+sys.FrameWidth/2 && !touchingLeft && !leftAdjacent {
 			g.player.Slides = &g.player.RunFrames
@@ -151,7 +151,7 @@ func jump(g *Game) {
 
 	g.player.ResetWileECoyote()
 
-	if ebiten.IsKeyPressed(ebiten.KeySpace) || ebiten.IsKeyPressed(ebiten.KeyArrowUp) {
+	if ebiten.IsKeyPressed(ebiten.KeySpace) || ebiten.IsKeyPressed(ebiten.KeyArrowUp) || ebiten.IsKeyPressed(ebiten.KeyW) {
 		if g.player.TimeSinceLastJump+g.player.JumpRecovery < g.count {
 			if _, _, _, a := g.level.LevelImage.At(g.player.X-sys.FrameWidth/2, g.player.Y-g.level.JumpHeight).RGBA(); a == 0 {
 				g.player.YVelocity = -float64(g.level.JumpHeight)
