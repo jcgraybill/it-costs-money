@@ -3,7 +3,7 @@ module github.com/jcgraybill/it-costs-money
 go 1.19
 
 require (
-	github.com/hajimehoshi/ebiten/v2 v2.4.10
+	github.com/hajimehoshi/ebiten/v2 v2.4.11
 	golang.org/x/image v0.1.0
 )
 
