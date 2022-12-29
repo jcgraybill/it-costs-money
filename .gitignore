@@ -1,4 +1,5 @@
 *.bak
 *.exe
+*.wasm
 .vscode
 .DS_Store
