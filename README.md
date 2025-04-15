@@ -1,7 +1,7 @@
 # it costs money to be alive
 A short, non-fighty indie side scroller game. Run with the right / left arrow keys, jump with up arrow or space. Collect coins and bring them to the end of the level, but you lose coins over time. 
 
-Currently in very preliminary state, there's one level, three or four minutes of gameplay. I've put a wasm build [right here](https://jcgraybill.github.io/it-costs-money/) that you can play in your web browser - try it out!
+Currently in very preliminary state, there's one level, three or four minutes of gameplay. Play it [right here](https://julesgraybill.com/it-costs-money.html) in a Chrome-based browser. (I know! I'm sorry!) 
 
 ![screenshot](https://github.com/jcgraybill/it-costs-money/blob/main/screenshot.png)
 
